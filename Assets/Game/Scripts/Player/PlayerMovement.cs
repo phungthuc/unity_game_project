@@ -64,7 +64,6 @@ namespace Game.Player
             
             if (x != 0 || z != 0)
             {
-                Debug.Log(123);
                 animator.SetBool("Walk", true);
                 animator.SetBool("Stop", false);
                 PlayerMoved.Invoke();

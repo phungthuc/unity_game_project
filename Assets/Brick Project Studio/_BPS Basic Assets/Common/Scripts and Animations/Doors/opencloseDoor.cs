@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,44 +12,65 @@ namespace SojaExiles
 		public Animator openandclose;
 		public bool open;
 		public Transform Player;
+		public LayerMask PlayerLayerMask;
 		
 		void Start()
 		{
 			open = false;
 		}
 
-		void OnMouseOver()
+		// void OnMouseOver()
+		// {
+		// 	{
+		// 		if (Player)
+		// 		{
+		// 			float dist = Vector3.Distance(Player.position + new Vector3(0, 0, -1.8f), transform.position);
+		// 			Debug.Log(dist);
+		// 			if (dist < 15)
+		// 			{
+		// 				if (open == false)
+		// 				{
+		// 					if (Input.GetKeyDown(KeyCode.E))
+		// 					{
+		// 						StartCoroutine(opening());
+		// 					}
+		// 				}
+		// 				else
+		// 				{
+		// 					if (open == true)
+		// 					{
+		// 						if (Input.GetKeyDown(KeyCode.E))
+		// 						{
+		// 							StartCoroutine(closing());
+		// 						}
+		// 					}
+		//
+		// 				}
+		//
+		// 			}
+		// 		}
+		//
+		// 	}
+		//
+		// }
+
+		private void OnCollisionEnter(Collision other)
 		{
+			if (LayerMarkChecker.LayerInLayerMask(other.gameObject.layer, PlayerLayerMask))
 			{
-				if (Player)
+				if (open == false)
 				{
-					float dist = Vector3.Distance(Player.position, transform.position);
-					if (dist < 15)
-					{
-						if (open == false)
-						{
-							if (Input.GetKeyDown(KeyCode.E))
-							{
-								StartCoroutine(opening());
-							}
-						}
-						else
-						{
-							if (open == true)
-							{
-								if (Input.GetKeyDown(KeyCode.E))
-								{
-									StartCoroutine(closing());
-								}
-							}
-
-						}
-
-					}
+					StartCoroutine(opening());
 				}
+				else
+				{
+					if (open == true)
+					{ 
+						StartCoroutine(closing());
+					}
 
+				}
 			}
-
 		}
 
 		IEnumerator opening()
