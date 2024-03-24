@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Game.Player
 
@@ -15,7 +16,12 @@ namespace Game.Player
             set => _joystick = value;
         }
 
+        public UnityEvent PlayerMoved;
+        public UnityEvent PlayerStoped;
+
         public CharacterController controller;
+        
+        public Animator animator;
 
         public float speed = 5f;
         public float gravity = -15f;
@@ -34,7 +40,19 @@ namespace Game.Player
 
         void Update()
         {
-            
+            Move();
+        }
+        
+        public void OnJump()
+        {
+            if (isGrounded)
+            {
+                velocity.y += Mathf.Sqrt(jumpHeight * -3.0f * gravityValue);
+            }
+        }
+
+        private void Move()
+        {
             isGrounded = controller.isGrounded;
             if (isGrounded && velocity.y < 0)
             {
@@ -43,6 +61,20 @@ namespace Game.Player
 
             float x = Input.GetAxis("Horizontal");
             float z = Input.GetAxis("Vertical");
+            
+            if (x != 0 || z != 0)
+            {
+                Debug.Log(123);
+                animator.SetBool("Walk", true);
+                animator.SetBool("Stop", false);
+                PlayerMoved.Invoke();
+            }
+            else if (x == 0 && z == 0)
+            {
+                animator.SetBool("Walk", false);
+                animator.SetBool("Stop", true);
+                PlayerStoped.Invoke();
+            }
 
             Vector3 move = transform.right * x + transform.forward * z;
 
@@ -54,18 +86,7 @@ namespace Game.Player
             
             if (Input.GetKeyDown(KeyCode.Space))
             {
-               OnJump();
-            }
-
-        }
-        
-        public void OnJump()
-        {
-            Debug.Log(111);
-            if (isGrounded)
-            {
-                Debug.Log(222);
-                velocity.y += Mathf.Sqrt(jumpHeight * -3.0f * gravityValue);
+                OnJump();
             }
         }
     }
